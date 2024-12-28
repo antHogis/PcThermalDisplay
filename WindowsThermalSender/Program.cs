@@ -10,6 +10,7 @@ namespace WindowsThermalSerialSender
         CPU = 0,
         GPU = 1,
     }
+
     class UpdateVisitor : IVisitor
     {
         public void VisitComputer(IComputer computer)
@@ -24,7 +25,6 @@ namespace WindowsThermalSerialSender
         public void VisitSensor(ISensor sensor) { }
         public void VisitParameter(IParameter parameter) { }
     }
-
 
     class HardwareInfoRetriever
     {
@@ -55,7 +55,6 @@ namespace WindowsThermalSerialSender
 
             return FindWithIndex(cpuTempIndex.Value);
         }
-
 
         public float? GetGpuTemp()
         {
@@ -120,24 +119,6 @@ namespace WindowsThermalSerialSender
             serialPort.Open();
         }
 
-        public void Run()
-        {
-            Console.WriteLine("Opening port", serialPort.PortName);
-            serialPort.Open();
-
-            Random rand = new Random();
-
-            while (true)
-            {
-                string data1 = rand.Next(1, 999).ToString().PadLeft(3, '0');
-                string data2 = rand.Next(1, 999).ToString().PadLeft(3, '0');
-
-                SendTemp(HardwareSerialIdentifier.CPU, data1);
-                SendTemp(HardwareSerialIdentifier.GPU, data2);
-                Thread.Sleep(1000);
-            }
-        }
-
         public void SendData(HardwareInfoRetriever retriever)
         {
             var cpuTemp = retriever.GetCpuTemp()?.ToString("00.0");
@@ -145,12 +126,10 @@ namespace WindowsThermalSerialSender
 
             if (cpuTemp != null)
             {
-
                 SendTemp(HardwareSerialIdentifier.CPU, cpuTemp);
             }
             if (gpuTemp != null)
             {
-
                 SendTemp(HardwareSerialIdentifier.GPU, gpuTemp);
             }
         }
