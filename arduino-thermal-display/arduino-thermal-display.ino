@@ -15,6 +15,9 @@ String default_string = "N/Ac";
 String curr_string_0  = default_string;
 String curr_string_1  = default_string;
 
+unsigned long write_time_0 = millis();
+unsigned long write_time_1 = millis();
+
 void displayString(Adafruit_AlphaNum4* alpha4, String* str)
 {
 	for (uint8_t i = 0; i < 4; ++i)
@@ -36,12 +39,24 @@ void onSerialStringReceived(String* serial_string)
 		{
 			curr_string_0 = serial_string->substring(1);
 			curr_string_0.concat("c");
+			write_time_0 = millis();
 		}
 		else if (serial_string->charAt(0) == '1')
 		{
 			curr_string_1 = serial_string->substring(1);
 			curr_string_1.concat("c");
+			write_time_1 = millis();
 		}
+	}
+}
+
+void resetStaleData(unsigned long* write_time, String* curr_string)
+{
+	auto now = millis();
+	if ((now - *write_time) > 5000)
+	{
+		*curr_string = default_string;
+		*write_time  = now;
 	}
 }
 
@@ -52,8 +67,8 @@ void setup()
 	alpha4_0.begin(0x70);
 	alpha4_1.begin(0x72);
 
-  alpha4_0.setBrightness(3);
-  alpha4_1.setBrightness(5);
+	alpha4_0.setBrightness(6);
+	alpha4_1.setBrightness(6);
 
 	alpha4_0.clear();
 	alpha4_1.clear();
@@ -79,7 +94,8 @@ void loop()
 		}
 	}
 
-  // TODO nullify stale data
+	resetStaleData(&write_time_0, &curr_string_0);
+	resetStaleData(&write_time_1, &curr_string_1);
 
 	displayString(&alpha4_0, &curr_string_0);
 	displayString(&alpha4_1, &curr_string_1);
