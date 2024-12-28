@@ -92,12 +92,14 @@ namespace WindowsThermalSerialSender
                 {
                     var sensor = hardware.Sensors[sensorIndex];
 
-                    if (hardware.HardwareType == HardwareType.Cpu && sensor.SensorType == SensorType.Temperature)
+                    if (hardware.HardwareType == HardwareType.Cpu
+                        && sensor.SensorType == SensorType.Temperature)
                     {
                         cpuTempIndex = (hardwareIndex, sensorIndex);
-
                     }
-                    else if (hardware.HardwareType == HardwareType.GpuNvidia && sensor.SensorType == SensorType.Temperature)
+                    else if (hardware.HardwareType == HardwareType.GpuNvidia
+                             && sensor.SensorType == SensorType.Temperature
+                             && sensor.Name == "GPU Core")
                     {
                         gpuTempIndex = (hardwareIndex, sensorIndex);
 
@@ -149,7 +151,7 @@ namespace WindowsThermalSerialSender
             if (gpuTemp != null)
             {
 
-            SendTemp(HardwareSerialIdentifier.GPU, gpuTemp);
+                SendTemp(HardwareSerialIdentifier.GPU, gpuTemp);
             }
         }
 
